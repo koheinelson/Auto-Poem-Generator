@@ -1,3 +1,5 @@
+package PoetryGenerator;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,12 +11,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class PoemGenerator {
 
     private static final String API_URL = "https://api.datamuse.com/words?rel_rhy=";
-    private static final String TWAIN_TEXT_URL = "https://raw.githubusercontent.com/gmamaladze/trienet/master/DemoApp/texts/Adventures%20of%20Huckleberry%20Finn%20by%20Mark%20Twain.txt"; // Raw Twain text URL
+    private static final String TWAIN_TEXT_URL = "https://raw.githubusercontent.com/gmamaladze/trienet/master/DemoApp/texts/Adventures%20of%20Huckleberry%20Finn%20by%20Mark%20Twain.txt";
 
     // Get rhymes for the word from Datamuse API
     public static List<String> getRhymes(String word) {
@@ -57,7 +58,6 @@ public class PoemGenerator {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Split by sentence end markers, you might need more sophisticated sentence parsing
                     String[] sentenceArray = line.split("\\. ");
                     for (String sentence : sentenceArray) {
                         sentences.add(sentence.trim());
@@ -71,73 +71,59 @@ public class PoemGenerator {
         return sentences;
     }
 
-    // Generate a short poem by finding rhyming words in Mark Twain's sentences
+    // Generate a short poem with a maximum of 10 lines, ensuring each line ends with a rhyme
     public static String generatePoem(String word) {
-        // Get rhymes for the input word
         List<String> rhymes = getRhymes(word);
-
-        // Get sentences from Mark Twain text
         List<String> sentences = getMarkTwainSentences();
 
-        // Build the poem by matching rhyming words with sentences
-        StringBuilder poem = new StringBuilder("Here is your poem based on the word '");
-        poem.append(word).append("':\n");
+        StringBuilder poem = new StringBuilder();
+        int linesAdded = 0;
 
-        Random rand = new Random();
         for (String rhyme : rhymes) {
-            // Find a random sentence that contains a rhyme
+            if (linesAdded >= 10) break; // Stop after 10 lines
             for (String sentence : sentences) {
                 if (sentence.contains(rhyme)) {
-                    poem.append(sentence).append("\n");
+                    // Ensure the sentence ends with the rhyme word
+                    String updatedSentence = sentence.replaceAll("(?i)\\b" + rhyme + "\\b.*", "") + rhyme + ".";
+                    poem.append(updatedSentence).append("\n");
+                    linesAdded++;
                     break;
                 }
             }
         }
-
         return poem.toString();
     }
 
     // Method to create and show the GUI
     public static void createAndShowGUI() {
-        // Create the main frame
         JFrame frame = new JFrame("Rhyme Poem Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(600, 500);
 
-        // Create a panel for the components
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        // Create a label for instructions
         JLabel label = new JLabel("Enter a monosyllabic word:");
         panel.add(label, BorderLayout.NORTH);
 
-        // Create a text field for the word input
         JTextField wordField = new JTextField();
         panel.add(wordField, BorderLayout.CENTER);
 
-        // Create a button to generate the poem
         JButton generateButton = new JButton("Generate Poem");
         panel.add(generateButton, BorderLayout.SOUTH);
 
-        // Create a text area to display the poem
         JTextArea poemArea = new JTextArea();
         poemArea.setEditable(false);
         poemArea.setLineWrap(true);
         poemArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(poemArea);
+        scrollPane.setPreferredSize(new Dimension(400, 300));
+
         panel.add(scrollPane, BorderLayout.EAST);
 
-        // Add the panel to the frame
-        frame.getContentPane().add(panel);
-
-        // Define the button action
         generateButton.addActionListener(e -> {
             String word = wordField.getText().trim();
-
-            // Ensure the word is monosyllabic (optional check)
             if (isMonosyllabic(word)) {
-                // Generate the poem and display it
                 String poem = generatePoem(word);
                 poemArea.setText(poem);
             } else {
@@ -145,17 +131,17 @@ public class PoemGenerator {
             }
         });
 
-        // Show the frame
+        frame.getContentPane().add(panel);
         frame.setVisible(true);
     }
 
     // Check if the word is monosyllabic (simple check, can be improved)
     public static boolean isMonosyllabic(String word) {
-        return word.split("[aeiou]+").length == 2; // Simplistic check for syllables
+        return word.split("[aeiou]+").length == 2;
     }
 
     public static void main(String[] args) {
-        // Run the GUI on the Swing event dispatch thread
-        SwingUtilities.invokeLater(RhymePoemGeneratorGUI::createAndShowGUI);
+        SwingUtilities.invokeLater(PoemGenerator::createAndShowGUI);
     }
 }
+
