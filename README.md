@@ -1,4 +1,4 @@
-# Auto-Poem Generator
+# Auto-Poem-Generator
 
 This program takes a user input and creates a poem built out of the text of a Mark Twain.
 
