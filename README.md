@@ -1,9 +1,6 @@
 # Auto-Poem-Generator
 
-This program takes a user input and creates a poem built out of the text of a Mark Twain.
-
-I came up with this idea originally when I was 16. My old implementation used JSoup to scrape text directly from Rhymezone.com. 
-This new version uses data from Rhymezone's Datamuse API and comes with a GUI.
+This program generates a poem based on user input, using text sourced from the works of Mark Twain. Originally conceived when I was 16, my initial implementation utilized JSoup to scrape data directly from RhymeZone. The latest version has been redesigned to leverage RhymeZone's Datamuse API and now features a graphical user interface for an improved user experience.
 
 
 <br><br>
