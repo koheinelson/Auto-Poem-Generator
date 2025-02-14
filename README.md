@@ -8,7 +8,6 @@ Automatically generate poetry from the works of Mark Twain
 
 <img width="608" alt="Screenshot 2025-02-13 at 8 16 37 PM" src="https://github.com/user-attachments/assets/c790ed85-b101-4357-8a35-4c039cb8dc4b" />
 
-<img width="609" alt="Screenshot 2025-02-13 at 8 17 56 PM" src="https://github.com/user-attachments/assets/6726b86d-9034-4d44-9a66-4938681e48e5" />
 
 # Todo
 
