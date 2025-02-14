@@ -3,5 +3,7 @@
 Automatically generate poetry from the works of Mark Twain
 
 <br>
-<img width="508" alt="Screenshot 2025-02-13 at 6 27 53 PM" src="https://github.com/user-attachments/assets/0c861740-2109-40c5-97ba-b56641b01f72" />
+
+<img width="604" alt="Screenshot 2025-02-13 at 8 15 24 PM" src="https://github.com/user-attachments/assets/5de8b108-661e-433f-9c1e-18e1a019d16b" />
+
 
