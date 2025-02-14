@@ -10,3 +10,10 @@ Automatically generate poetry from the works of Mark Twain
 
 <img width="609" alt="Screenshot 2025-02-13 at 8 17 56 PM" src="https://github.com/user-attachments/assets/6726b86d-9034-4d44-9a66-4938681e48e5" />
 
+# Todo
+
+Fix bug where the same line appears more than once in the poem
+Make a dropdown to select between different authors
+Web version
+
+
