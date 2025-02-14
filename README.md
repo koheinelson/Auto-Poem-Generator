@@ -12,8 +12,8 @@ Automatically generate poetry from the works of Mark Twain
 
 # Todo
 
-Fix bug where the same line appears more than once in the poem
-Make a dropdown to select between different authors
-Web version
+Fix bug where the same line appears more than once in the poem <br>
+Make a dropdown to select between different authors <br>
+Web version <br>
 
 
