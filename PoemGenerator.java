@@ -1,5 +1,3 @@
-package PoetryGenerator;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,7 +16,7 @@ import java.util.HashSet;
 public class PoemGenerator {
 
     private static final String API_URL = "https://api.datamuse.com/words?rel_rhy=";
-    private static final String TWAIN_TEXT_URL = "https://raw.githubusercontent.com/gmamaladze/trienet/master/DemoApp/texts/Adventures%20of%20Huckleberry%20Finn%20by%20Mark%20Twain.txt";
+    private static final String TWAIN_TEXT_URL = "https://raw.githubusercontent.com/koheinelson/auto-poem/refs/heads/master/mark_twain.txt";
 
     public static List<String> getRhymes(String word) {
         List<String> rhymes = new ArrayList<>();
@@ -69,57 +67,36 @@ public class PoemGenerator {
     }
 
     public static String generatePoem(String word) {
-        List<String> rhymes = getRhymes(word);
-        List<String> sentences = getMarkTwainSentences();
-        Set<String> usedRhymes = new HashSet<>();
-        Set<String> usedLines = new HashSet<>();
+       
+    	List<String> rhymes = getRhymes(word); // Get rhyming words
+        List<String> sentences = getMarkTwainSentences(); // Get Twain sentences
         StringBuilder poem = new StringBuilder();
         int linesAdded = 0;
 
-        for (String rhyme : rhymes) {
-            if (linesAdded >= 10) break;
-            if (usedRhymes.contains(rhyme)) continue;
+        for (String rhyme : rhymes) { // Go through each rhyme in order
+            if (linesAdded >= 10) break; // Stop after 10 lines
 
-            for (String sentence : sentences) {
-                if (sentence.contains(rhyme)) {
-                    String[] words = sentence.split("\\s+");
-                    StringBuilder line = new StringBuilder();
+            for (String sentence : sentences) { // Check each sentence
+                int index = sentence.toLowerCase().indexOf(rhyme.toLowerCase()); // Find the index of the rhyme
+                if (index != -1) { // If rhyme exists in the sentence
+                    String extracted = sentence.substring(0, index + rhyme.length()).trim(); // Extract up to the rhyme
+                    
+                    // Normalize spaces (remove extra spaces between words)
+                    extracted = extracted.replaceAll("\\s+", " ");
 
-                    int start = Math.max(0, Arrays.asList(words).indexOf(rhyme) - 9);
-                    for (int i = start; i < words.length && line.length() < 50; i++) {
-                        line.append(words[i]).append(" ");
+                    // Ensure the extracted text contains at least two words
+                    if (extracted.split("\\s+").length >= 2) {
+                        poem.append(extracted).append("\n");
+                        linesAdded++;
+                        break; // Move to the next rhyme after finding a match
                     }
-
-                    // Ensure the line has at least 3 words
-                    String lineText = line.toString().trim();
-                    if (lineText.split("\\s+").length < 3) {
-                        continue; // Skip lines with fewer than 3 words
-                    }
-
-                    // Check if the line ends with a rhyme
-                    String lastWord = lineText.split("\\s+")[lineText.split("\\s+").length - 1];
-
-                    // If the line doesn't end with a rhyme, skip this sentence
-                    if (!rhymes.contains(lastWord)) {
-                        continue;
-                    }
-
-                    // Skip if the line has already been used
-                    if (usedLines.contains(lineText)) {
-                        continue;
-                    }
-
-                    poem.append(lineText).append("\n");
-                    usedRhymes.add(rhyme);
-                    usedLines.add(lineText); // Mark this line as used
-                    linesAdded++;
-                    break;
                 }
             }
         }
 
         return poem.append("\n-by Mark Twain").toString();
     }
+
 
     public static void createAndShowGUI() {
         JFrame frame = new JFrame("Rhyme Poem Generator");
@@ -161,13 +138,31 @@ public class PoemGenerator {
         frame.setVisible(true);
     }
 
-    public static boolean isMonosyllabic(String word) {
-        return word.split("[aeiouy]+").length == 2;
+   public static boolean isMonosyllabic(String word) {
+    word = word.toLowerCase().replaceAll("[^a-z]", ""); // Remove non-letter characters
+    int syllableCount = 0;
+    boolean prevVowel = false;
+
+    for (char c : word.toCharArray()) {
+        if ("aeiouy".indexOf(c) != -1) { // Check if the character is a vowel
+            if (!prevVowel) { // Count only new vowel groups
+                syllableCount++;
+            }
+            prevVowel = true;
+        } else {
+            prevVowel = false;
+        }
     }
 
+    // Adjust for common edge cases
+    if (word.endsWith("e") && syllableCount > 1) {
+        syllableCount--;
+    }
+
+    return syllableCount == 1;
+}
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(PoemGenerator::createAndShowGUI);
     }
 }
-
-
